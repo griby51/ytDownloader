@@ -3,7 +3,7 @@ from pytubefix import YouTube, Playlist
 from pytubefix.exceptions import *
 from tqdm import tqdm
 
-
+#i found that on internet, i don't know how that work LOL
 def progress_func(stream, chunk, bytes_remaining):
     current = stream.filesize - bytes_remaining
     done = int(50 * current / stream.filesize)
