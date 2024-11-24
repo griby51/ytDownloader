@@ -1,6 +1,7 @@
-﻿Download youtube video
-Use main.py for all option and test.py for only music
+Download youtube video use main.py for all option but u can also use test for music
 
-to use :
+to use:
+
 pip install pytubefix
+
 pip install tqdm
