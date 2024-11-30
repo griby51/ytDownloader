@@ -61,20 +61,20 @@ def dlPlaylist(playlist_url, onlyAudio = False, folder = "downloads"):
         i += 1
         # print ("Progression : ", (i - 1)/ pl_lenght * 100, "%", " [", "]")
 
-def main():
-    url = input("Enter playlist url or video url : ")
-    onlyAudio = input("Download only audio ? (y/n) : ")
-    if onlyAudio == "y" or onlyAudio == "Y":
-        onlyAudio = True
-    else:
-        onlyAudio = False
-    print("Downloading... Control C to stop")
-    if "list" in url:
-        dlPlaylist(url, onlyAudio)
-    else:
-        dlVideo(url, onlyAudio)
-    print("Done")
+# def main():
+#     url = input("Enter playlist url or video url : ")
+#     onlyAudio = input("Download only audio ? (y/n) : ")
+#     if onlyAudio == "y" or onlyAudio == "Y":
+#         onlyAudio = True
+#     else:
+#         onlyAudio = False
+#     print("Downloading... Control C to stop")
+#     if "list" in url:
+#         dlPlaylist(url, onlyAudio)
+#     else:
+#         dlVideo(url, onlyAudio)
+#     print("Done")
 
-main()
+# main()
 
     
