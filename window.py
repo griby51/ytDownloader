@@ -41,13 +41,11 @@ def progress_func(stream, chunk, bytes_remaining):
     current = stream.filesize - bytes_remaining
     done = int(50 * current / stream.filesize)
 
-    # Texte de progression complet
     progress_text = f"[{'=' * done}{' ' * (50 - done)}] {bytes_to_megabytes(current):.2f} MB / {bytes_to_megabytes(stream.filesize):.2f} MB"
 
-    # Réduire la taille de la police si le texte dépasse
-    max_width = window.winfo_width() - 20  # Largeur maximale disponible
+    max_width = window.winfo_width() - 20 
     font_size = 15
-    while len(progress_text) * font_size > max_width and font_size > 8:  # Réduire la taille de la police
+    while len(progress_text) * font_size > max_width and font_size > 8:
         font_size -= 1
 
     progressBarLabelVideo.config(font=("Arial", font_size), text=progress_text)
@@ -77,7 +75,6 @@ def dlVideo(link, onlyAudio=False, folder="downloads", isPlaylist=False, event=N
         except Exception as e:
             progressBarLabelVideo["text"] = f"Error: {str(e)}"
 
-    # Lancer le téléchargement dans un nouveau thread
     threading.Thread(target=download_task).start()
 
 def dlPlaylist(link, onlyAudio=False, folder="downloads"):
@@ -85,7 +82,7 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
     i = 0
 
     def download_task(video_url):
-        nonlocal i  # Declare that `i` belongs to the enclosing scope
+        nonlocal i
         try:
             yt = YouTube(
                 video_url,
@@ -126,8 +123,6 @@ def download(onlyAudio, isPlaylist, folder="downloads", link=""):
     else:
         dlVideo(link, onlyAudio=onlyAudio, folder=folder)
 
-
-# Placement des éléments
 titleLabel.place(relx=0.5, rely=0.1, anchor="center")
 linkLabel.place(relx=0.1, rely=0.3, anchor="w")
 linkEntry.place(relx=0.1, rely=0.4, anchor="w", relwidth=0.8)
@@ -137,5 +132,4 @@ dlButton.place(relx=0.5, rely=0.6, anchor="center", relwidth=0.8)
 progressBarLabelVideo.place(relx=0.5, rely=0.7, anchor="center")
 progressBarLabelPlaylist.place(relx=0.5, rely=0.8, anchor="center")
 
-# Démarrer la fenêtre
 window.mainloop()
