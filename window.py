@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from pytubefix import Playlist, YouTube
 import threading
 
@@ -16,6 +17,8 @@ linkEntry = tk.Entry(window, bg="#121212", fg="white", border=0, font=("Arial", 
 
 progressBarLabelVideo = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
 progressBarLabelPlaylist = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
+style = ttk.Style()
+style.configure("Horizontal.TProgressbar", background="#1E1E1E", troughcolor="#383838")
 
 playlistCheckButton = tk.Checkbutton(
     window, bg="#383838", fg="white", activebackground="#383838",
@@ -41,7 +44,7 @@ def progress_func(stream, chunk, bytes_remaining):
     current = stream.filesize - bytes_remaining
     done = int(50 * current / stream.filesize)
 
-    progress_text = f"[{'=' * done}{' ' * (50 - done)}] {bytes_to_megabytes(current):.2f} MB / {bytes_to_megabytes(stream.filesize):.2f} MB"
+    progress_text = f"{stream.title} | {bytes_to_megabytes(current):.2f} MB / {bytes_to_megabytes(stream.filesize):.2f} MB"
 
     max_width = window.winfo_width() - 20 
     font_size = 15
@@ -80,9 +83,10 @@ def dlVideo(link, onlyAudio=False, folder="downloads", isPlaylist=False, event=N
 def dlPlaylist(link, onlyAudio=False, folder="downloads"):
     pl = Playlist(link)
     i = 0
+    progressBar = ttk.Progressbar(window, orient="horizontal", length=600, mode="determinate", maximum=len(pl.video_urls), style="Horizontal.TProgressbar")
+    progressBar.place(relx=0.5, rely=0.8, anchor="center", relwidth=0.8)
 
     def download_task(video_url):
-        nonlocal i
         try:
             yt = YouTube(
                 video_url,
@@ -96,23 +100,28 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
 
         except Exception as e:
             progressBarLabelVideo["text"] = f"Error: {str(e)}"
-            
-        i += 1
 
-        pourcentage = (i / len(pl.video_urls)) * 100
-        done = int(50 * pourcentage / 100)
+        print(len(pl.video_urls))    
+        progressBar["value"]+=1
+        print(progressBar["value"])
+        window.update()
 
-        progressText =f"[{'=' * done}{' ' * (50 - done)}] {i} of {len(pl.video_urls)}"
-        max_width = window.winfo_width() - 20
-        font_size = 15
-        while len(progressText) * font_size > max_width and font_size > 8:
-            font_size -= 1
 
-        progressBarLabelPlaylist.config(font=("Arial", font_size), text=progressText)
 
-        progressBarLabelPlaylist["text"] = progressText
-        if i == len(pl.video_urls):
-            progressBarLabelPlaylist["text"] = "Done"
+        # pourcentage = (i / len(pl.video_urls)) * 100
+        # done = int(50 * pourcentage / 100)
+
+        # progressText =f"[{'=' * done}{' ' * (50 - done)}] {i} of {len(pl.video_urls)}"
+        # max_width = window.winfo_width() - 20
+        # font_size = 15
+        # while len(progressText) * font_size > max_width and font_size > 8:
+        #     font_size -= 1
+
+        # progressBarLabelPlaylist.config(font=("Arial", font_size), text=progressText)
+
+        # progressBarLabelPlaylist["text"] = progressText
+        # if i == len(pl.video_urls):
+        #     progressBarLabelPlaylist["text"] = "Done"
 
     for video_url in pl.video_urls:
         threading.Thread(target=download_task, args=(video_url,)).start()
