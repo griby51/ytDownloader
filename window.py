@@ -16,7 +16,6 @@ linkLabel = tk.Label(window, text="Enter link :", font=("Arial", 15), bg="#38383
 linkEntry = tk.Entry(window, bg="#121212", fg="white", border=0, font=("Arial", 15), insertbackground="white")
 
 progressBarLabelVideo = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
-progressBarLabelPlaylist = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
 style = ttk.Style()
 
 TROUGH_COLOR = '#383838'
@@ -25,11 +24,6 @@ style.configure("bar.Horizontal.TProgressbar", troughcolor=TROUGH_COLOR,
                 bordercolor=TROUGH_COLOR, background=BAR_COLOR, lightcolor=BAR_COLOR, 
                 darkcolor=BAR_COLOR)
 
-playlistCheckButton = tk.Checkbutton(
-    window, bg="#383838", fg="white", activebackground="#383838",
-    selectcolor="#383838", text="Playlist", activeforeground="white",
-    font=("Arial", 15), variable=isPlaylist, onvalue=True, offvalue=False
-)
 onlyAudioCheckButton = tk.Checkbutton(
     window, bg="#383838", fg="white", activebackground="#383838",
     selectcolor="#383838", text="Only Audio", activeforeground="white",
@@ -87,9 +81,9 @@ def dlVideo(link, onlyAudio=False, folder="downloads", isPlaylist=False, event=N
 
 def dlPlaylist(link, onlyAudio=False, folder="downloads"):
     pl = Playlist(link)
-    i = 0
     progressBar = ttk.Progressbar(window, orient="horizontal", length=600, mode="determinate", maximum=len(pl.video_urls), style="Horizontal.TProgressbar")
     progressBar.place(relx=0.5, rely=0.8, anchor="center", relwidth=0.8)
+
 
     def download_task(video_url):
         try:
@@ -132,7 +126,8 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
         threading.Thread(target=download_task, args=(video_url,)).start()
 
 def download(onlyAudio, isPlaylist, folder="downloads", link=""):
-    if isPlaylist:
+    #if link contains list
+    if link.rfind("list") != -1:
         dlPlaylist(link, onlyAudio=onlyAudio, folder=folder)
     else:
         dlVideo(link, onlyAudio=onlyAudio, folder=folder)
@@ -140,10 +135,8 @@ def download(onlyAudio, isPlaylist, folder="downloads", link=""):
 titleLabel.place(relx=0.5, rely=0.1, anchor="center")
 linkLabel.place(relx=0.1, rely=0.3, anchor="w")
 linkEntry.place(relx=0.1, rely=0.4, anchor="w", relwidth=0.8)
-playlistCheckButton.place(relx=0.1, rely=0.5, anchor="w")
-onlyAudioCheckButton.place(relx=0.3, rely=0.5, anchor="w")
+onlyAudioCheckButton.place(relx=0.1, rely=0.5, anchor="w")
 dlButton.place(relx=0.5, rely=0.6, anchor="center", relwidth=0.8)
 progressBarLabelVideo.place(relx=0.5, rely=0.7, anchor="center")
-progressBarLabelPlaylist.place(relx=0.5, rely=0.8, anchor="center")
 
 window.mainloop()
