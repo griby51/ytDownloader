@@ -6,7 +6,9 @@ import threading
 window = tk.Tk()
 window.title("Youtube Downloader")
 window.geometry('720x360')
-window.minsize(720, 360)
+#set logo
+window.iconbitmap("logo.ico")
+window.resizable(False, False)
 window.config(bg="#383838")
 isPlaylist = tk.BooleanVar()
 onlyAudio = tk.BooleanVar()
@@ -26,14 +28,15 @@ style.configure("bar.Horizontal.TProgressbar", troughcolor=TROUGH_COLOR,
 
 onlyAudioCheckButton = tk.Checkbutton(
     window, bg="#383838", fg="white", activebackground="#383838",
-    selectcolor="#383838", text="Only Audio", activeforeground="white",
-    font=("Arial", 15), variable=onlyAudio, onvalue=True, offvalue=False
+    selectcolor="#1C1C1C", text="Only Audio", activeforeground="white",
+    font=("Arial", 15), variable=onlyAudio, onvalue=True, offvalue=False,
+    relief=tk.FLAT
 )
 
 dlButton = tk.Button(
     window, text="Download", fg="white", bg="#2C2C2C", border=0,
     activebackground="#1E1E1E", font=("Arial", 15), activeforeground="white",
-    command=lambda: download(onlyAudio=onlyAudio.get(), isPlaylist=isPlaylist.get(), link=linkEntry.get())
+    command=lambda: download(onlyAudio=onlyAudio.get(), link=linkEntry.get())
 )
 
 def bytes_to_megabytes(bytes_size):
@@ -83,7 +86,9 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
     pl = Playlist(link)
     progressBar = ttk.Progressbar(window, orient="horizontal", length=600, mode="determinate", maximum=len(pl.video_urls), style="Horizontal.TProgressbar")
     progressBar.place(relx=0.5, rely=0.8, anchor="center", relwidth=0.8)
-
+    progressLabel = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
+    progressLabel.place(relx=0.5, rely=0.9, anchor="center")
+    print(len(pl.video_urls))   
 
     def download_task(video_url):
         try:
@@ -99,10 +104,10 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
 
         except Exception as e:
             progressBarLabelVideo["text"] = f"Error: {str(e)}"
-
-        print(len(pl.video_urls))    
+  
         progressBar["value"]+=1
         print(progressBar["value"])
+        progressLabel["text"] = f"{progressBar['value']} of {len(pl.video_urls)}"
         window.update()
 
 
@@ -125,7 +130,7 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
     for video_url in pl.video_urls:
         threading.Thread(target=download_task, args=(video_url,)).start()
 
-def download(onlyAudio, isPlaylist, folder="downloads", link=""):
+def download(onlyAudio,  folder="downloads", link=""):
     #if link contains list
     if link.rfind("list") != -1:
         dlPlaylist(link, onlyAudio=onlyAudio, folder=folder)
