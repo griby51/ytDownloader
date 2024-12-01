@@ -99,18 +99,16 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
 
         except Exception as e:
             progressBarLabelVideo["text"] = f"Error: {str(e)}"
-
-        # Update the count and the UI
+            
         i += 1
 
         pourcentage = (i / len(pl.video_urls)) * 100
         done = int(50 * pourcentage / 100)
 
         progressText =f"[{'=' * done}{' ' * (50 - done)}] {i} of {len(pl.video_urls)}"
-        # progressBarLabelPlaylist["text"] = f"{i} of {len(pl.video_urls)} downloaded"
-        max_width = window.winfo_width() - 20  # Largeur maximale disponible
+        max_width = window.winfo_width() - 20
         font_size = 15
-        while len(progressText) * font_size > max_width and font_size > 8:  # Réduire la taille de la police
+        while len(progressText) * font_size > max_width and font_size > 8:
             font_size -= 1
 
         progressBarLabelPlaylist.config(font=("Arial", font_size), text=progressText)
@@ -119,9 +117,7 @@ def dlPlaylist(link, onlyAudio=False, folder="downloads"):
         if i == len(pl.video_urls):
             progressBarLabelPlaylist["text"] = "Done"
 
-    # Loop through the playlist videos
     for video_url in pl.video_urls:
-        # Start the download task in a new thread for each video
         threading.Thread(target=download_task, args=(video_url,)).start()
 
 def download(onlyAudio, isPlaylist, folder="downloads", link=""):
