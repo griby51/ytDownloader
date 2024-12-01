@@ -18,7 +18,12 @@ linkEntry = tk.Entry(window, bg="#121212", fg="white", border=0, font=("Arial", 
 progressBarLabelVideo = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
 progressBarLabelPlaylist = tk.Label(window, text="", bg="#383838", fg="white", font=("Arial", 15))
 style = ttk.Style()
-style.configure("Horizontal.TProgressbar", background="#1E1E1E", troughcolor="#383838")
+
+TROUGH_COLOR = '#383838'
+BAR_COLOR = '#2C2C2C'
+style.configure("bar.Horizontal.TProgressbar", troughcolor=TROUGH_COLOR, 
+                bordercolor=TROUGH_COLOR, background=BAR_COLOR, lightcolor=BAR_COLOR, 
+                darkcolor=BAR_COLOR)
 
 playlistCheckButton = tk.Checkbutton(
     window, bg="#383838", fg="white", activebackground="#383838",
