@@ -32,32 +32,34 @@ def showProgressBar(progress, total, prefix=""):
     if progress == total:
         print()
 
-# def showProgressBar(progress, total, width=50, prefix=""):
-#     ratio = progress / total
-#     filled = int(ratio * width)
-#     bar =f"[{filled * "#"}{(width - filled) * ' '}] {ratio * 100:.2f}%"
-#     sys.stdout.write(f"\r{prefix}, {bar}")
-#     sys.stdout.flush()
+def dlVideo(url, onlyAudio = False, prefix=""):
+    try:
+        yt = YouTube(url)
+        title = yt.title
+        prefix = prefix + " " + title
+        yt.register_on_progress_callback(lambda stream, chunk, bytes_remaining: showProgressBar(stream.filesize - bytes_remaining, stream.filesize, prefix=prefix))
 
-#     if progress == total:
-#         sys.stdout.write("\n")
+        if onlyAudio:
+            video = yt.streams.get_audio_only()
+        else:
+            video = yt.streams.get_highest_resolution()
+        video.download("downloads")
+    except Exception as e:
+        print(e)
 
-def dlVideo(url, onlyAudio = False):
-    yt = YouTube(url)
-    title = yt.title
-    yt.register_on_progress_callback(lambda stream, chunk, bytes_remaining: showProgressBar(stream.filesize - bytes_remaining, stream.filesize, prefix=title))
+def dlPlaylist(url, onlyAudio = False):
+    pl = Playlist(url)
+    i = 1
+    for video_url in pl.video_urls:
+        #prefix = (video url number/total video number)
+        prefix = f"({i}/{len(pl.video_urls)})"
+        dlVideo(video_url, onlyAudio=onlyAudio, prefix=prefix)
+        i += 1
 
-    if onlyAudio:
-        video = yt.streams.get_audio_only()
+try: 
+    if args.url.rfind("list") != -1:
+        dlPlaylist(args.url, args.audio)
     else:
-        video = yt.streams.get_highest_resolution()
-    video.download("downloads")
-
-dlVideo('https://www.youtube.com/watch?v=qc5bFkNj2XQ')
-dlVideo('https://www.youtube.com/watch?v=_LiZWbBR96A')
-
-# print(f"url {args.url}")
-# if args.audio:
-#     print("only audio")
-# else:
-#     dlVideo(args.url, args.audio)
+        dlVideo(args.url, args.audio)
+except Exception as e:
+    print(e)
